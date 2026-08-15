@@ -44,7 +44,8 @@ public class SecurityConfig {
                                                                 "/swagger-ui.html",
                                                                 "/v3/api-docs/**")
                                                 .permitAll()
-                                                .anyRequest().authenticated())
+                                                .anyRequest()
+                                                .authenticated())
 
                                 .sessionManagement(session -> session
                                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -63,8 +64,7 @@ public class SecurityConfig {
 
                 CorsConfiguration configuration = new CorsConfiguration();
 
-                configuration.setAllowedOrigins(List.of(
-                                "http://localhost:3000"));
+                configuration.setAllowedOriginPatterns(List.of("*"));
 
                 configuration.setAllowedMethods(List.of(
                                 "GET",

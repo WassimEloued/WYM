@@ -2,11 +2,16 @@ import api from "./api";
 
 
 export async function registerUser(data: {
-    name: string;
+    role: "customer" | "agency" | "admin";
     email: string;
     password: string;
 }) {
-    const response = await api.post("/auth/register", data);
+    const sanitizedData = {
+        ...data,
+        role: data.role ? (data.role.toLowerCase() as "customer" | "agency" | "admin") : "customer"
+    };
+
+    const response = await api.post("/auth/register", sanitizedData);
 
     return response.data;
 }
