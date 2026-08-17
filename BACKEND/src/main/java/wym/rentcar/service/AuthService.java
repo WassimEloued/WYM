@@ -56,7 +56,7 @@ public class AuthService {
         EmailVerificationToken verificationToken = EmailVerificationToken.builder()
                 .token(token)
                 .user(user)
-                .expiryDate(Instant.now().plusSeconds(86400)) // 24h
+                .expiryDate(Instant.now().plusSeconds(86400))
                 .build();
 
         emailVerificationTokenRepository.save(verificationToken);
@@ -79,7 +79,7 @@ public class AuthService {
         RefreshToken refreshToken = RefreshToken.builder()
                 .token(refreshTokenStr)
                 .user(user)
-                .expiryDate(Instant.now().plusSeconds(604800)) // 7 days
+                .expiryDate(Instant.now().plusSeconds(604800))
                 .build();
         refreshTokenRepository.save(refreshToken);
 
