@@ -1,5 +1,6 @@
 package wym.rentcar.security;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import wym.rentcar.exception.ApiException;
 
 import java.util.List;
 
@@ -32,15 +34,17 @@ public class SecurityConfig {
         private final UserDetailsService userDetailsService;
 
         @Bean
-        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws ApiException {
                 http
                                 .csrf(AbstractHttpConfigurer::disable)
 
                                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
+
                                 .authorizeHttpRequests(auth -> auth
                                                 .requestMatchers("/api/auth/**",
                                                                 "/swagger-ui/**",
+                                                                "/error",
                                                                 "/swagger-ui.html",
                                                                 "/v3/api-docs/**")
                                                 .permitAll()
@@ -96,7 +100,7 @@ public class SecurityConfig {
 
         @Bean
         public AuthenticationManager authenticationManager(
-                        AuthenticationConfiguration config) throws Exception {
+                        AuthenticationConfiguration config) throws ApiException {
                 return config.getAuthenticationManager();
         }
 

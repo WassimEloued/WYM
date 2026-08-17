@@ -57,10 +57,10 @@ export default function RegisterForm() {
 
     try {
       await registerUser({
-        email: data.email,
-        password: data.password,
-        role: (data.role ? data.role.toLowerCase() : "customer") as "customer"
-      });
+      email: data.email,
+      password: data.password,
+      role: data.role.toLowerCase() as "customer" | "agency",
+    });
 
       router.push("/login");
     } catch (error: any) {
