@@ -38,6 +38,7 @@ public class AuthService {
 
     @Transactional
     public void register(RegisterRequest request) {
+
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new ApiException("Email already in use");
         }
@@ -53,6 +54,7 @@ public class AuthService {
         userRepository.save(user);
 
         String token = UUID.randomUUID().toString();
+
         EmailVerificationToken verificationToken = EmailVerificationToken.builder()
                 .token(token)
                 .user(user)
@@ -60,27 +62,42 @@ public class AuthService {
                 .build();
 
         emailVerificationTokenRepository.save(verificationToken);
-        emailService.sendVerificationEmail(user.getEmail(), token);
+
+        emailService.sendVerificationEmail(
+                user.getEmail(),
+                token
+        );
     }
 
     public AuthResponse login(LoginRequest request) {
+
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
         );
 
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new ApiException("User not found"));
+                .orElseThrow(() ->
+                        new ApiException("User not found")
+                );
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
+        UserDetails userDetails =
+                userDetailsService.loadUserByUsername(user.getEmail());
 
-        String accessToken = jwtService.generateToken(userDetails);
-        String refreshTokenStr = jwtService.generateRefreshToken(userDetails);
+        String accessToken =
+                jwtService.generateToken(userDetails);
+
+        String refreshTokenStr =
+                jwtService.generateRefreshToken(userDetails);
 
         RefreshToken refreshToken = RefreshToken.builder()
                 .token(refreshTokenStr)
                 .user(user)
                 .expiryDate(Instant.now().plusSeconds(604800))
                 .build();
+
         refreshTokenRepository.save(refreshToken);
 
         return AuthResponse.builder()
@@ -93,15 +110,21 @@ public class AuthService {
 
     @Transactional
     public void verifyEmail(String token) {
-        EmailVerificationToken verificationToken = emailVerificationTokenRepository.findByToken(token)
-                .orElseThrow(() -> new ApiException("Invalid verification token"));
+
+        EmailVerificationToken verificationToken =
+                emailVerificationTokenRepository.findByToken(token)
+                        .orElseThrow(() ->
+                                new ApiException("Invalid verification token")
+                        );
 
         if (verificationToken.getExpiryDate().isBefore(Instant.now())) {
             throw new ApiException("Verification token expired");
         }
 
         User user = verificationToken.getUser();
+
         user.setVerified(true);
+
         userRepository.save(user);
 
         emailVerificationTokenRepository.delete(verificationToken);
