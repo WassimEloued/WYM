@@ -1,34 +1,12 @@
 import Link from "next/link";
 import { ArrowRight, Fuel, Users, Settings } from "lucide-react";
 
-const cars = [
-  {
-    id: 1,
-    brand: "BMW",
-    model: "320i",
-    price: 120,
-    image:
-      "https://images.unsplash.com/photo-1555215695-3004980ad54e",
-  },
-  {
-    id: 2,
-    brand: "Mercedes-Benz",
-    model: "C-Class",
-    price: 150,
-    image:
-      "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8",
-  },
-  {
-    id: 3,
-    brand: "Audi",
-    model: "A4",
-    price: 110,
-    image:
-      "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6",
-  },
-];
+import { cars } from "@/lib/cars";
 
 export default function FeaturedCars() {
+  // Only show the first 3 cars on the homepage
+  const featuredCars = cars.slice(0, 6);
+
   return (
     <section className="bg-white py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -58,12 +36,13 @@ export default function FeaturedCars() {
             View all cars
             <ArrowRight size={18} />
           </Link>
+
         </div>
 
         {/* Cars */}
         <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
 
-          {cars.map((car) => (
+          {featuredCars.map((car) => (
             <div
               key={car.id}
               className="overflow-hidden rounded-2xl border bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
@@ -81,7 +60,7 @@ export default function FeaturedCars() {
               {/* Content */}
               <div className="p-5">
 
-                <div className="flex items-start justify-between">
+                <div className="flex items-start justify-between gap-4">
 
                   <div>
                     <p className="text-sm text-gray-500">
@@ -95,35 +74,42 @@ export default function FeaturedCars() {
 
                   <div className="text-right">
                     <p className="text-xl font-bold text-gray-900">
-                      {car.price} TND
+                      {car.pricePerDay} TND
                     </p>
 
                     <p className="text-xs text-gray-500">
                       per day
                     </p>
                   </div>
+
                 </div>
+
+                {/* Location */}
+                <p className="mt-2 text-sm text-gray-500">
+                  📍 {car.location}
+                </p>
 
                 {/* Features */}
                 <div className="mt-5 flex items-center gap-4 border-t pt-4 text-sm text-gray-500">
 
                   <span className="flex items-center gap-1.5">
                     <Settings size={16} />
-                    Auto
+                    {car.transmission}
                   </span>
 
                   <span className="flex items-center gap-1.5">
                     <Fuel size={16} />
-                    Petrol
+                    {car.fuel}
                   </span>
 
                   <span className="flex items-center gap-1.5">
                     <Users size={16} />
-                    5
+                    {car.seats}
                   </span>
 
                 </div>
 
+                {/* Details */}
                 <Link
                   href={`/cars/${car.id}`}
                   className="mt-5 block rounded-xl bg-gray-900 py-3 text-center text-sm font-semibold text-white transition hover:bg-blue-600"
